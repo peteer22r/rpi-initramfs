@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+installver="$1"
+installpath="$2"
+
+runningver=`uname -r`
+
+installtype=`echo $installver | sed 's|[^-+]*||'`
+runningtype=`echo $runningver | sed 's|[^-+]*||'`
+
+if [ "$installtype" = "$runningtype" ]
+then
+    update-initramfs -c -k $installver
+    sed -i "s|#initramfs$installtype|initramfs initrd.img-$installver|" /boot/config.txt
+fi

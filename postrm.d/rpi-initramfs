@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+removedver="$1"
+removedpath="$2"
+runningver=`uname -r`
+
+removedtype=`echo $removedver | sed 's|[^-+]*||'`
+runningtype=`echo $runningver | sed 's|[^-+]*||'`
+
+if [ "$removedtype" = "$runningtype" ]
+then
+    update-initramfs -d -k $removedver
+    ver=`echo $removedver | sed -e 's/\./\\\./g'`
+    sed -i "s|initramfs initrd.img-$ver|#initramfs$removedtype|" /boot/config.txt
+fi
